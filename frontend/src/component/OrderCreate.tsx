@@ -18,12 +18,7 @@ import { BookInterface } from "../models/Book";
 import { BookTypeInterface } from "../models/BookType";
 import { CompanyInterface } from "../models/Company";
 import { AdminInterface } from "../models/Admin";
-import Orders from "./Orders";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDateTimePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+
 import { TextField } from "@material-ui/core";
 
 const Alert = (props: AlertProps) => {
@@ -47,12 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function OrderCreate() {
  const classes = useStyles();
- const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
  const [admins,    setAdmin] = useState<AdminInterface[]>([]);
  const [books,     setBook] = useState<BookInterface[]>([]);
  const [book_types, setBookType] = useState<BookTypeInterface[]>([]);
- const [companys, setCompany] = useState<CompanyInterface[]>([]);
- const [book_orders, setBookOrder] = useState<Partial<BookOrderInterface>>({});
+ const [companies, setCompanies] = useState<CompanyInterface[]>([]);
+ const [bookOrder, setBookOrder] = useState<Partial<BookOrderInterface>>({});
  
  const [success, setSuccess] = useState(false);
  const [error, setError] = useState(false);
@@ -73,59 +67,44 @@ function OrderCreate() {
    setSuccess(false);
    setError(false);
  };
- const handleInputChange = (
-  event: React.ChangeEvent<{ id?: string; value: any }>
-  ) => {
-    const id = event.target.id as keyof typeof book_orders;
-    const { value } = event.target;
-    setBookOrder({ ...book_orders, [id]: value });
-  };
 
  const handleChange = (
    event: React.ChangeEvent<{ name?: string; value: unknown }>
  ) => {
-   const name = event.target.name as keyof typeof book_orders;
+   const name = event.target.name as keyof typeof bookOrder;
+   const val = event.target.value
    setBookOrder({
-     ...book_orders,
-     [name]: event.target.value,
+     ...bookOrder,
+     [name]: typeof val === 'string' ? parseInt(val) : undefined,
    });
  };
 
- const handleDateChange = (date: Date | null) => {
-   console.log(date);
-   setSelectedDate(date);
- };
-
  const getAdmin = async () => {
-  fetch(`${apiUrl}/category`, requestOptions)
+  fetch(`${apiUrl}/admin`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
-      if (res.data) {setAdmin(res.data);} 
-      else {console.log("else");}
+      setAdmin(res);
     });
   };  
   const getCompany = async () => {
-    fetch(`${apiUrl}/category`, requestOptions)
+    fetch(`${apiUrl}/company`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        if (res.data) {setCompany(res.data);} 
-        else {console.log("else");}
+        setCompanies(res);
       });
     }; 
  const getBook = async () => {
-  fetch(`${apiUrl}/category`, requestOptions)
+  fetch(`${apiUrl}/book`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
-      if (res.data) {setBook(res.data);} 
-      else {console.log("else");}
+      setBook(res);
     });
   }; 
   const getBookType = async () => {
-  fetch(`${apiUrl}/category`, requestOptions)
+  fetch(`${apiUrl}/book-type`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
-      if (res.data) {setBookType(res.data);} 
-      else {console.log("else");}
+      setBookType(res);
     });
   }; 
 
@@ -135,22 +114,8 @@ function OrderCreate() {
   getBook();
   getBookType();
   }, []);
-  
- const convertType = (data: string | number | undefined) => {
-  let val = typeof data === "string" ? parseInt(data) : data;
-  return val;
-  };  
 
 function submit() {
-   let data = {
-    //  AdminID : convertType(book_orders.AdminID),
-    //  CompanyID : convertType(book_orders.CompanyID),
-    //  BookID : convertType(book_orders.BookID),
-    //  BookTypeID : convertType(book_orders.BookTypeID),
-    //  Quantity : book_orders.Quantity ?? "",
-   };
-
-   console.log(data)
 
    const requestOptionsPost = {
     method: "POST",
@@ -158,17 +123,15 @@ function submit() {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(bookOrder),
   };
 
-  fetch(`${apiUrl}/bookorder`, requestOptionsPost)
+  fetch(`${apiUrl}/book-order`, requestOptionsPost)
       .then((response) => response.json())
       .then((res) => {
-        if (res.data) {
-          console.log("บันทึกได้")
+        if (res) {
           setSuccess(true);
         } else {
-          console.log("บันทึกผิดพลาด")
           setError(true);
         }
       });
@@ -204,21 +167,22 @@ return (
          
        <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>Email</p>
+              <p>แอดมิน</p>
               <Select
                 native
                 // value={book_orders.AdminID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "VideoID",
+                  name: "AdminID",
                 }}
+                defaultValue="none"
               >
-                <option aria-label="None" value="">
-                  กรุณาเลือกวีดีโอ
+                <option aria-label="None" value="none" disabled>
+                  กรุณาเลือกแอดมิน
                 </option>
-                {admins.map((item: AdminInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {/* {item.AName} */}
+                {admins.map((admin: AdminInterface) => (
+                  <option value={admin.ID} key={admin.ID}>
+                    {admin.AdminName}
                   </option>
                 ))}
               </Select>
@@ -230,18 +194,19 @@ return (
               <p>บริษัท</p>
               <Select
                 native
-                value={book_orders.ID}
+                value={bookOrder.ID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "ID",
+                  name: "CompanyID",
                 }}
+                defaultValue="none"
               >
-                <option aria-label="None" value="">
+                <option aria-label="None" value="none" disabled>
                   กรุณาเลือกบริษัท
                 </option>
-                {companys.map((item: CompanyInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {/* {item.CName} */}
+                {companies.map((company: CompanyInterface) => (
+                  <option value={company.ID} key={company.ID}>
+                    {company.CompanyName}
                   </option>
                 ))}
               </Select>
@@ -253,86 +218,23 @@ return (
               <p>ชื่อหนังสือ</p>
               <Select
                 native
-                value = {book_orders.ID}
+                // value = {book_orders.ID}
                 onChange = {handleChange}
                 inputProps={{
                 name: "BookID",}}
+                defaultValue="none"
               >
-                <option aria-label="None" value="">กรุณาเลือกหนังสือ</option>
-                {books.map((item: BookInterface) => (
-                <option value={item.ID} key={item.ID}>
-                  {/* {item.ID}.{item.BName} */}
+                <option aria-label="None" value="none" disabled>
+                  กรุณาเลือกหนังสือ
+                </option>
+                {books.map((book: BookInterface) => (
+                <option value={book.ID} key={book.ID}>
+                  {book.ID}.{book.BookName}
                   </option>
                   ))}
                   </Select>
                   </FormControl>
           </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>ประเภทหนังสือ</p>
-              <Select
-              native
-              // value={book_orders.BookTypeID}
-              onChange={handleChange}
-              inputProps={{
-                name: "BookTypeID",
-                }}
-                >
-                  <option aria-label="None" value="">
-                    กรุณาเลือกประเภท
-                    </option>
-                    {book_types.map((item: BookTypeInterface) => (
-                    <option value={item.ID} key={item.ID}>
-                      {/* {item.ID}.{item.BTName} */}
-                      </option>
-                      ))}
-                      </Select>
-                      </FormControl>
-                      </Grid>
-
-          {/* <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>ประเภทหนังสือ</p>
-              <Select
-              native
-              value={book_orders.BookTypeID}
-              onChange={handleChange}
-              inputProps={{
-              name: "BookTypeID",
-              }}
-              >
-              <option aria-label="None" value="">
-                กรุณาระบุหนังสือ
-              </option>
-              {book_types.map((item: BookTypeInterface) => (
-                <option value={item.BTName} key={item.ID}>
-                รหัสหนังสือ {item.ID} ประเภทหนังสือ {item.BTName}
-              </option>
-              ))}
-              </Select>
-            </FormControl>
-          </Grid> */}
-
-          {/* <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>ประเภทหนังสือ</p>
-              <Select
-                native
-                value = {book_orders.ID}
-                onChange = {handleChange}
-                inputProps={{
-                name: "BookTypeID",}}
-              >
-                <option aria-label="None" value="">กรุณาเลือกประเภทหนังสือ</option>
-                {book_types.map((item: BookTypeInterface) => (
-                <option value={item.ID} key={item.ID}>
-                  {item.ID}.{item.BTName}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-        </Grid> */}
 
          <Grid item xs={6}>
            <FormControl fullWidth variant="outlined">
@@ -340,27 +242,13 @@ return (
               <TextField            
                 id="quantity"
                 variant="outlined"
-                type="uint"
+                type="number"
                 size="medium"
-                value={book_orders.Quantity || ""}
-                onChange={handleInputChange}
+                name="Quantity"
+                placeholder="กรุณาเลือกจำนวน"
+                // value={book_orders.Quantity || ""}
+                onChange={handleChange}
               />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>วันที่</p>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDateTimePicker
-                  name="Date"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  label="กรุณาเลือกวันที่"
-                  minDate={new Date("2018-01-01")}
-                  format="yyyy/MM/dd"
-                />
-              </MuiPickersUtilsProvider>
             </FormControl>
           </Grid>
 
