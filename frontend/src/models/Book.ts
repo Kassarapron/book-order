@@ -1,6 +1,15 @@
+import { BookTypeInterface } from "./BookType";
+
 export interface BookInterface {
-    ID          : number,
-    BName       : string,
-    number      : String,
-    Publicher   : string;
+    ID              : number,
+    CreatedAt       : string,
+    UpdatedAt       : string,
+    DeletedAt?      : string,
+    BookName        : string,
+    BookNumber      : string,
+    BookAuthor      : string,
+    BookPublicher   : string,
+    BookOrders?     : any,
+    BookTypeId      : number,
+    BookType        : BookTypeInterface,
 }

@@ -143,11 +143,11 @@ function OrderCreate() {
 
 function submit() {
    let data = {
-     AdminID : convertType(book_orders.AdminID),
-     CompanyID : convertType(book_orders.CompanyID),
-     BookID : convertType(book_orders.BookID),
-     BookTypeID : convertType(book_orders.BookTypeID),
-     Quantity : book_orders.Quantity ?? "",
+    //  AdminID : convertType(book_orders.AdminID),
+    //  CompanyID : convertType(book_orders.CompanyID),
+    //  BookID : convertType(book_orders.BookID),
+    //  BookTypeID : convertType(book_orders.BookTypeID),
+    //  Quantity : book_orders.Quantity ?? "",
    };
 
    console.log(data)
@@ -207,7 +207,7 @@ return (
               <p>Email</p>
               <Select
                 native
-                value={book_orders.AdminID}
+                // value={book_orders.AdminID}
                 onChange={handleChange}
                 inputProps={{
                   name: "VideoID",
@@ -218,7 +218,7 @@ return (
                 </option>
                 {admins.map((item: AdminInterface) => (
                   <option value={item.ID} key={item.ID}>
-                    {item.AName}
+                    {/* {item.AName} */}
                   </option>
                 ))}
               </Select>
@@ -241,7 +241,7 @@ return (
                 </option>
                 {companys.map((item: CompanyInterface) => (
                   <option value={item.ID} key={item.ID}>
-                    {item.CName}
+                    {/* {item.CName} */}
                   </option>
                 ))}
               </Select>
@@ -261,7 +261,7 @@ return (
                 <option aria-label="None" value="">กรุณาเลือกหนังสือ</option>
                 {books.map((item: BookInterface) => (
                 <option value={item.ID} key={item.ID}>
-                  {item.ID}.{item.BName}
+                  {/* {item.ID}.{item.BName} */}
                   </option>
                   ))}
                   </Select>
@@ -273,7 +273,7 @@ return (
               <p>ประเภทหนังสือ</p>
               <Select
               native
-              value={book_orders.BookTypeID}
+              // value={book_orders.BookTypeID}
               onChange={handleChange}
               inputProps={{
                 name: "BookTypeID",
@@ -284,7 +284,7 @@ return (
                     </option>
                     {book_types.map((item: BookTypeInterface) => (
                     <option value={item.ID} key={item.ID}>
-                      {item.ID}.{item.BTName}
+                      {/* {item.ID}.{item.BTName} */}
                       </option>
                       ))}
                       </Select>

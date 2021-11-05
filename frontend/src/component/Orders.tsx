@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -13,9 +13,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { BookOrderInterface } from "../models/BookOrder";
-//import moment from 'moment';
+import moment from 'moment';
 import { format } from "date-fns";
-import moment from "moment";
+// import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,10 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Orders() {
   const classes = useStyles();
-  const [Orders, setOrders] = React.useState<BookOrderInterface[]>([]);
-  const apiUrl = "http://localhost8080/Orders";
+  const [Orders, setOrders] = useState<BookOrderInterface[]>([]);
   const getOrders = async () => {
-      const apiUrl = "http://localhost:8080/Orders";
+      const apiUrl = "http://localhost:8080/book-order";
       const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -39,18 +38,14 @@ function Orders() {
     fetch(apiUrl, requestOptions)
        .then((response) => response.json())
        .then((res) => {
-         console.log(res.data);
-         if (res.data) {
-           setOrders(res.data);
-         } else {
-           console.log("else");
-         }
+         setOrders(res);
        });
   };
 
   useEffect(() => {
     getOrders();
   }, []);
+
   return (
     <div>
       <Container className={classes.container} maxWidth="md">
@@ -84,7 +79,7 @@ function Orders() {
                   ID
                 </TableCell>
                 <TableCell align="center" width="20%">
-                  Email
+                  Admin name
                 </TableCell>
                 <TableCell align="center" width="20%">
                   ชื่อบริษัท
@@ -107,12 +102,12 @@ function Orders() {
               {Orders.map((order: BookOrderInterface) => (
                 <TableRow key={order.ID}>
                   <TableCell align="right"  size="medium"> {order.ID}           </TableCell>
-                  <TableCell align="left"   size="medium"> {order.AdminName}    </TableCell>
-                  <TableCell align="left"   size="medium"> {order.CompanyName}  </TableCell>
-                  <TableCell align="left"   size="medium"> {order.BookTypeName} </TableCell>
-                  <TableCell align="left"   size="medium"> {order.BookName}     </TableCell>
+                  <TableCell align="left"   size="medium"> {order.Admin.AdminName}    </TableCell>
+                  <TableCell align="left"   size="medium"> {order.Company.CompanyName}  </TableCell>
+                  <TableCell align="left"   size="medium"> {order.Book.BookType.TypeName} </TableCell>
+                  <TableCell align="left"   size="medium"> {order.Book.BookName}     </TableCell>
                   <TableCell align="right"  size="medium"> {order.Quantity}     </TableCell>
-                  <TableCell align="center" size="medium"> {moment(order.Date).format("DD/MM/YYYY")}    </TableCell>             
+                  <TableCell align="center" size="medium"> {moment(order.CreatedAt).format("DD/MM/YYYY")}    </TableCell>             
                 </TableRow>
               ))}
             </TableBody>

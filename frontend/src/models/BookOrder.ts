@@ -2,24 +2,19 @@
 // import { NamedTupleMember } from "typescript";
 import { AdminInterface } from "./Admin";
 import { BookInterface } from "./Book";
-import { BookTypeInterface } from "./BookType";
+// import { BookTypeInterface } from "./BookType";
 import { CompanyInterface } from "./Company";
 
 export interface BookOrderInterface {
-    ID          : number,
-    Quantity    : string;
-    Date        : Date;
-
-    AdminID     : number;
-    AdminName   : AdminInterface;
-
-    BookID      : number;
-    BookName    : BookInterface;
-
-    BookTypeID  : number;
-    BookTypeName: BookTypeInterface;
-
-    CompanyID   : number;
-    CompanyName : CompanyInterface;
-    
+    ID          : string,
+    CreatedAt   : string,
+    UpdatedAt   : string,
+    DeletedAt?  : string,
+    Quantity    : number,
+    AdminId     : number,
+    Admin       : AdminInterface,
+    CompanyId   : number,
+    Company     : CompanyInterface,
+    BookId      : number,
+    Book        : BookInterface,
 }
