@@ -5,14 +5,6 @@ import (
 )
 
 //del this
-type User struct {
-	gorm.Model
-	Username string `json:"username"`
-	Password string `json:"-"`
-	Name     string `json:"name"`
-	Age      uint   `json:"age"`
-}
-
 type Admin struct {
 	gorm.Model
 	AdminName  string
@@ -33,7 +25,6 @@ type Book struct {
 	gorm.Model
 	BookName      string
 	BookNumber    string `gorm:"uniqeIndex"`
-	BookAuthor    string
 	BookPublicher string
 	BookOrders    []BookOrder `gorm:"foreignKey:BookID`
 	//BookTypeID ทำหน้าที่เป็น FK

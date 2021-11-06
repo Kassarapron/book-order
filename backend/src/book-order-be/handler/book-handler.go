@@ -4,15 +4,12 @@ import (
 	"book-order-be/entity"
 	"book-order-be/repository"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 func CreateBook(c *gin.Context) {
 	var req struct {
 		BookName      string `json:"BookName"`
 		BookNumber    string `json:"BookNumber"`
-		BookAuthor    string `json:"BookAuthor"`
 		BookPublicher string `json:"BookPublicher"`
 		BookTypeID    uint   `json:"BookTypeID"`
 	}
@@ -27,7 +24,6 @@ func CreateBook(c *gin.Context) {
 	book := entity.Book{
 		BookName:      req.BookName,
 		BookNumber:    req.BookNumber,
-		BookAuthor:    req.BookAuthor,
 		BookPublicher: req.BookPublicher,
 		BookTypeID:    &req.BookTypeID,
 	}

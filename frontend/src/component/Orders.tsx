@@ -15,12 +15,11 @@ import TableRow from "@material-ui/core/TableRow";
 import { BookOrderInterface } from "../models/BookOrder";
 import moment from 'moment';
 import { format } from "date-fns";
-// import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: { marginTop: theme.spacing(2) },
-    table: { minWidth: 800 },
+    table: { minWidth: 900 },
     tableSpace: { marginTop: 20 },
   })
 );
@@ -101,12 +100,12 @@ function Orders() {
             <TableBody>
               {Orders.map((order: BookOrderInterface) => (
                 <TableRow key={order.ID}>
-                  <TableCell align="right"  size="medium"> {order.ID}           </TableCell>
-                  <TableCell align="left"   size="medium"> {order.Admin.AdminName}    </TableCell>
-                  <TableCell align="left"   size="medium"> {order.Company.CompanyName}  </TableCell>
-                  <TableCell align="left"   size="medium"> {order.Book.BookType.TypeName} </TableCell>
-                  <TableCell align="left"   size="medium"> {order.Book.BookName}     </TableCell>
-                  <TableCell align="right"  size="medium"> {order.Quantity}     </TableCell>
+                  <TableCell align="center" size="medium"> {order.ID}           </TableCell>
+                  <TableCell align="center" size="medium"> {order.Admin.AdminName}    </TableCell>
+                  <TableCell align="center" size="medium"> {order.Company.CompanyName}  </TableCell>
+                  <TableCell align="center" size="medium"> {order.Book.BookType.TypeName} </TableCell>
+                  <TableCell align="center" size="medium"> {order.Book.BookName}     </TableCell>
+                  <TableCell align="center" size="medium"> {order.Quantity}     </TableCell>
                   <TableCell align="center" size="medium"> {moment(order.CreatedAt).format("DD/MM/YYYY")}    </TableCell>             
                 </TableRow>
               ))}

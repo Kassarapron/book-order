@@ -3,8 +3,6 @@ package main
 import (
 	"book-order-be/handler"
 	"book-order-be/setup"
-
-	"github.com/gin-gonic/gin"
 )
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -26,26 +24,20 @@ func main() {
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.GET("/users", handler.ListUsers)
-	r.GET("/users/:name", handler.GetUser)
-	r.POST("/users", handler.CreateUser)
-
+	// r.GET("/users", handler.ListUsers)
+	// r.GET("/users/:name", handler.GetUser)
+	// r.POST("/users", handler.CreateUser)
 	r.POST("/admin", handler.CreateAdmin)     //create new admin
 	r.GET("/admin", handler.GetAllAdmins)     //list all admins
 	r.GET("/admin/:id", handler.GetAdminById) //get admin by id
-
 	r.POST("/book-order", handler.CreateBookOrder) //create new book-order
 	r.GET("/book-order", handler.GetAllBookOrders) //list all  book-orders
-
 	r.POST("/company", handler.CreateCompany)  //create new company
 	r.GET("/company", handler.GetAllCompanies) //list all companies
-
 	r.POST("/book-type", handler.CreateBookType) //create new book type
 	r.GET("/book-type", handler.GetAllBookTypes) //list all book types
-
 	r.POST("/book", handler.CreateBook) //create new book
 	r.GET("/book", handler.GetAllBooks) //create new book
-
 	if err := r.Run("localhost:8080"); err != nil {
 		panic(err)
 	}

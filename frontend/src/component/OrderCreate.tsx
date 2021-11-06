@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import {makeStyles,Theme,createStyles,alpha,} from "@material-ui/core/styles";
+import {makeStyles,Theme,createStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import Container from "@material-ui/core/Container";
@@ -15,7 +15,7 @@ import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 
 import { BookOrderInterface } from "../models/BookOrder";
 import { BookInterface } from "../models/Book";
-import { BookTypeInterface } from "../models/BookType";
+//import { BookTypeInterface } from "../models/BookType";
 import { CompanyInterface } from "../models/Company";
 import { AdminInterface } from "../models/Admin";
 
@@ -44,9 +44,9 @@ function OrderCreate() {
  const classes = useStyles();
  const [admins,    setAdmin] = useState<AdminInterface[]>([]);
  const [books,     setBook] = useState<BookInterface[]>([]);
- const [book_types, setBookType] = useState<BookTypeInterface[]>([]);
+ //const [book_types, setBookType] = useState<BookTypeInterface[]>([]);
  const [companies, setCompanies] = useState<CompanyInterface[]>([]);
- const [bookOrder, setBookOrder] = useState<Partial<BookOrderInterface>>({});
+ const [bookOrder, setBookOrder] = useState<any>({});
  
  const [success, setSuccess] = useState(false);
  const [error, setError] = useState(false);
@@ -100,41 +100,37 @@ function OrderCreate() {
       setBook(res);
     });
   }; 
-  const getBookType = async () => {
-  fetch(`${apiUrl}/book-type`, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      setBookType(res);
-    });
-  }; 
 
  useEffect(() => {
   getAdmin();
   getCompany();
   getBook();
-  getBookType();
+  //getBookType();
   }, []);
 
 function submit() {
-
-   const requestOptionsPost = {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(bookOrder),
-  };
-
-  fetch(`${apiUrl}/book-order`, requestOptionsPost)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res) {
-          setSuccess(true);
-        } else {
-          setError(true);
-        }
-      });
+  if(bookOrder.AdminID && bookOrder.Quantity && bookOrder.BookID && bookOrder.CompanyID){
+    const requestOptionsPost = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookOrder),
+    };
+  
+    fetch(`${apiUrl}/book-order`, requestOptionsPost)
+        .then((response) => response.json())
+        .then((res) => {
+          if (res) {
+            setSuccess(true);
+          } else {
+            setError(true);
+          }
+        });
+  }else{
+    setError(true);
+  }
 }
 
 return (
@@ -229,7 +225,7 @@ return (
                 </option>
                 {books.map((book: BookInterface) => (
                 <option value={book.ID} key={book.ID}>
-                  {book.ID}.{book.BookName}
+                  {book.BookName}
                   </option>
                   ))}
                   </Select>

@@ -4,8 +4,6 @@ import (
 	"book-order-be/entity"
 	"book-order-be/repository"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 func CreateBookType(c *gin.Context) {

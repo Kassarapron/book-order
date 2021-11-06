@@ -7,7 +7,6 @@ export interface BookInterface {
     DeletedAt?      : string,
     BookName        : string,
     BookNumber      : string,
-    BookAuthor      : string,
     BookPublicher   : string,
     BookOrders?     : any,
     BookTypeId      : number,
