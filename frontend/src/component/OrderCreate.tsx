@@ -46,7 +46,7 @@ function OrderCreate() {
  const [books,     setBook] = useState<BookInterface[]>([]);
  const [book_types, setBookType] = useState<BookTypeInterface[]>([]);
  const [companies, setCompanies] = useState<CompanyInterface[]>([]);
- const [bookOrder, setBookOrder] = useState<Partial<BookOrderInterface>>({});
+ const [bookOrder, setBookOrder] = useState<any>({});
  
  const [success, setSuccess] = useState(false);
  const [error, setError] = useState(false);
@@ -116,25 +116,28 @@ function OrderCreate() {
   }, []);
 
 function submit() {
-
-   const requestOptionsPost = {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(bookOrder),
-  };
-
-  fetch(`${apiUrl}/book-order`, requestOptionsPost)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res) {
-          setSuccess(true);
-        } else {
-          setError(true);
-        }
-      });
+  if(bookOrder.AdminID && bookOrder.Quantity && bookOrder.BookID && bookOrder.CompanyID){
+     const requestOptionsPost = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookOrder),
+    };
+  
+    fetch(`${apiUrl}/book-order`, requestOptionsPost)
+        .then((response) => response.json())
+        .then((res) => {
+          if (res) {
+            setSuccess(true);
+          } else {
+            setError(true);
+          }
+        });
+  }else{
+    setError(true);
+  }
 }
 
 return (
